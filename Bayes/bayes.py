@@ -127,7 +127,7 @@ for m in range(10):
     nb1 = BernoulliNB(alpha=1.0, binarize=0.001)  # Bayes
     nb2 = GaussianNB()  # GaussianNB
 
-    model = nb2.fit(data, y_train)
+    model = nb1.fit(data, y_train)
 
     # print(nb1.score(data, y_train))
 
@@ -184,14 +184,14 @@ print("The average accyracy is : ",np.mean(acc))
 #
 # plt.show()
 
-plt.plot(a,acc)
-plt.title('GaussianNB--Accuracy: 10 times')
-plt.savefig("GaussianNB_acc.png")
-plt.show()
-
 # plt.plot(a,acc)
-# plt.title('BernoulliNB--Accuracy: 10 times')
-# plt.savefig("BernoulliNB_acc.png")
+# plt.title('GaussianNB--Accuracy: 10 times')
+# plt.savefig("GaussianNB_acc.png")
 # plt.show()
+
+plt.plot(a,acc)
+plt.title('BernoulliNB--Accuracy: 10 times')
+plt.savefig("BernoulliNB_acc.png")
+plt.show()
 
 ########################################################################   end
