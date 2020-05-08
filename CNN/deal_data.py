@@ -12,14 +12,15 @@ from sklearn.preprocessing import LabelEncoder
 # nltk.download('punkt')
 
 
+# START #
 def load_data(path):
     """
     :param path:
     :return: data, label
     """
     dataset = np.array(pd.read_csv(path, header=None, skiprows=1))
-    data = dataset[:, 2: 3]
-    label = dataset[:, 3:]
+    data = dataset[:, 2]
+    label = dataset[:, -1]
     x_train, x_test, y_train, y_test = train_test_split(data, label, test_size=0.5)
     return data, label, x_train, x_test, y_train, y_test
 
@@ -36,7 +37,7 @@ def get_word_list(data, size):
     word_list = []
 
     for item in data:
-        item = re.sub(r'[^a-zA-Z0-9\s]', '', item[0])
+        item = re.sub(r'[^a-zA-Z0-9\s]', '', item)
         word_token = word_tokenize(item)
         for word in word_token:
             word = porter_stemmer.stem(word)
@@ -45,7 +46,7 @@ def get_word_list(data, size):
 
     word_list = [[k[0] for k in Counter(word_list).most_common(size)]]
 
-    return ["PAD"] + word_list
+    return word_list
 
 
 def prepare_data(word_list, size, x_train, y_train, seq_length):
@@ -59,7 +60,7 @@ def prepare_data(word_list, size, x_train, y_train, seq_length):
     """
     if len(word_list) < size:
         size = len(word_list)
-    content_length_list = [len(k[0]) for k in x_train]
+    content_length_list = [len(k) for k in x_train]
     if max(content_length_list) < seq_length:
         seq_length = max(content_length_list)
     word_id_list = dict([(b, a) for a, b in enumerate(word_list)])
@@ -88,13 +89,14 @@ def save(x_train, x_test, y_train, y_test, data, label, word_list, label_encoder
 
 def main():
     path = "../data/spam_ham_dataset.csv"
-    size = 5000
-    seq_length = 600
+    size = 1000
+    seq_length = 230
     data, label, x_train, x_test, y_train, y_test = load_data(path)
     word_list = get_word_list(data, size)
-    label_encoder, word_id_list, seq_length, size = prepare_data(word_list[1], size, x_train, y_train[:, 0], seq_length)
+    label_encoder, word_id_list, seq_length, size = prepare_data(word_list[0], size, x_train, y_train, seq_length)
     save(x_train, x_test, y_train, y_test, data, label, word_list, label_encoder, word_id_list, seq_length, size)
 
 
 if __name__ == '__main__':
     main()
+# END #
